@@ -10,6 +10,7 @@
 
     <nav class="top-bar">
         <a href="dashboard.html" class="icon-btn" id="profile-btn" aria-label="Your dashboard">👤</a>
+        <h2 id="welcome-msg">Welcome, </h2>
         <button class="icon-btn" id="add-btn" aria-label="Throw a bottle">✚</button>
     </nav>
 
@@ -28,10 +29,10 @@
         <div class="modal-box">
             <h2>Throw a bottle</h2>
             <textarea class="text-input" id="throw-textarea" maxlength="255" placeholder="Write your message..."></textarea>
-            <p class="char-count"><span id="char-count-num">0</span>/255</p>
+            <p class="char-num"><span id="throw-char-count">0</span>/255</p>
             <div class="modal-actions">
                 <button class="cancel-btn" id="cancel-btn">Cancel</button>
-                <button class="submit-btn" id="submit-btn">Throw</button>
+                <button class="submit-btn" id="throw-btn">Throw</button>
             </div>
         </div>
     </div>
@@ -48,11 +49,11 @@
             </div>
 
             <textarea class="text-input" id="mark-textarea" maxlength="100" placeholder="Leave a mark..."></textarea>
-            <p class="char-count"><span id="mark-char-count">0</span>/100</p>
+            <p class="char-num"><span id="mark-char-count">0</span>/100</p>
 
             <div class="modal-actions">
                 <button class="cancel-btn" id="close-bottle-btn">Close</button>
-                <button class="submit-btn" id="mark-submit-btn">Post</button>
+                <button class="submit-btn" id="post-mark-btn">Post</button>
             </div>
         </div>
     </div>

@@ -83,6 +83,7 @@ body {
     padding: 24px;
     width: 80%;
     max-width: 500px;
+    margin: 0 auto;
     overflow-y: auto;
 }
 

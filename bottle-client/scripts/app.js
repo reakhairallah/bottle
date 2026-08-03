@@ -58,10 +58,37 @@ throwBtn.addEventListener("click", () => {
 const bottleCard = document.querySelectorAll(".bottle-card");
 const drawModal = document.getElementById("draw-modal");
 const closeBtn = document.getElementById("close-bottle-btn");
+const bottleContent = document.getElementById("bottle-content");
+const marksList = document.getElementById("marks-list");
+
+let currentBottleId = null;
 
 bottleCard.forEach(card => {
     card.addEventListener("click", () => {
-        drawModal.classList.remove("hidden");
+        axios.get("../../bottle-server/draw.php").then((response) => {
+            if(!response.data.success){
+                if(response.data.message === "Throw a bottle first!"){
+                    //throwModal.classList.remove("hidden");
+                    alert("Throw a bottle first!");
+                } else{
+                    alert(response.data.message);
+                }
+                return;
+            }
+
+            currentBottleId = response.data.data.bottle.id;
+            bottleContent.textContent = response.data.data.bottle.content;
+
+            marksList.innerHTML = "";
+            response.data.data.marks.forEach((markText) => {
+                const markParagraph = document.createElement("p");
+                markParagraph.classList.add("mark");
+                markParagraph.textContent = markText;
+                marksList.appendChild(markParagraph);
+            });
+
+            drawModal.classList.remove("hidden");
+        });
     });
 });
 
@@ -82,5 +109,17 @@ markTextArea.addEventListener("input", () => {
 const postBtn = document.getElementById("post-mark-btn");
 
 postBtn.addEventListener("click", () => {
-    console.log("mark-textarea: "+ markTextArea.value);
+    const body = new URLSearchParams();
+    body.append("bottle_id", currentBottleId);
+    body.append("content", markTextArea.value);
+
+    axios.post("../../bottle-server/mark.php", body).then((response) => {
+        if(response.data.success){
+            drawModal.classList.add("hidden");
+            markTextArea.value = "";
+            markCharCount.textContent = "0";
+        }else{
+            alert(response.data.message);
+        }
+    });
 });

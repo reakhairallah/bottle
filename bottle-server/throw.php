@@ -12,6 +12,14 @@ if(isset($_POST["content"])){
     exit;
 }
 
+if(trim($content) === ""){
+    $response = [];
+    $response["success"] = false;
+    $response["message"] = "Content cannot be empty!";
+    echo json_encode($response);
+    exit;
+}
+
 $author_id = $current_user["id"];
 
 $sql = "SELECT COUNT(*) AS total FROM bottles WHERE author_id = ? AND created_at >= CURDATE()";

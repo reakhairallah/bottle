@@ -13,6 +13,14 @@ if(isset($_POST["bottle_id"]) && isset($_POST["content"])) {
     exit;
 }
 
+if(trim($content) === ""){
+    $response = [];
+    $response["success"] = false;
+    $response["message"] = "Content cannot be empty!";
+    echo json_encode($response);
+    exit;
+}
+
 $user_id = $current_user["id"];
 
 $sql = "INSERT INTO marks(bottle_id, user_id, content) VALUES(?, ?, ?)";

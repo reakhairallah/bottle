@@ -123,3 +123,21 @@ postBtn.addEventListener("click", () => {
         }
     });
 });
+
+
+// DRAW MODAL: report button
+const reportBtn = document.getElementById("report-btn");
+
+reportBtn.addEventListener("click", () => {
+    if(!confirm("Are you sure you want to report this bottle?")){
+        return;
+    }
+
+    const body = new URLSearchParams();
+    body.append("bottle_id", currentBottleId);
+
+    axios.post("../../bottle-server/report.php", body).then((response) => {
+        alert(response.data.message);
+        drawModal.classList.add("hidden");
+    });
+});

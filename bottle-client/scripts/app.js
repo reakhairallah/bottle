@@ -1,10 +1,24 @@
+// WELCOME MESSAGE
+const welcomeMsg = document.getElementById("welcome-msg");
+let canThrow = true;
+
+axios.get("../../bottle-server/get_current_user.php").then((response) => {
+    welcomeMsg.textContent = "Welcome, " + response.data.data.display_name;
+    canThrow = response.data.data.can_throw;
+});
+
+
 // THROW MODAL: open and close buttons
 const addBtn = document.getElementById("add-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 const throwModal = document.getElementById("throw-modal");
 
 addBtn.addEventListener("click", () => {
-    throwModal.classList.remove("hidden");
+    if(canThrow) {
+        throwModal.classList.remove("hidden");
+    } else {
+        alert("You've already thrown 3 bottles today!");
+    }
 });
 
 cancelBtn.addEventListener("click", () => {
@@ -25,7 +39,18 @@ throwTextArea.addEventListener("input", () => {
 const throwBtn = document.getElementById("throw-btn");
 
 throwBtn.addEventListener("click", () => {
-    console.log("throw-textarea: "+ throwTextArea.value);
+    const body = new URLSearchParams();
+    body.append("content", throwTextArea.value);
+
+    axios.post("../../bottle-server/throw.php", body).then((response) => {
+        if(response.data.success) {
+            throwModal.classList.add("hidden");
+            throwTextArea.value = "";
+            throwCharCount.textContent = "0";
+        } else{
+            alert(response.data.message);
+        }
+    });
 });
 
 

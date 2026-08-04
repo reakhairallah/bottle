@@ -2,9 +2,11 @@
 const welcomeMsg = document.getElementById("welcome-msg");
 let canThrow = true;
 
-axios.get("../../bottle-server/get_current_user.php").then((response) => {
+axios.get(BASE_URL + "get_current_user.php").then((response) => {
     welcomeMsg.textContent = "Welcome, " + response.data.data.display_name;
     canThrow = response.data.data.can_throw;
+}).catch((error) => {
+    alert("Something went wrong loading your account: " + error.message);
 });
 
 
@@ -42,7 +44,7 @@ throwBtn.addEventListener("click", () => {
     const body = new URLSearchParams();
     body.append("content", throwTextArea.value);
 
-    axios.post("../../bottle-server/throw.php", body).then((response) => {
+    axios.post(BASE_URL + "throw.php", body).then((response) => {
         if(response.data.success) {
             throwModal.classList.add("hidden");
             throwTextArea.value = "";
@@ -50,6 +52,8 @@ throwBtn.addEventListener("click", () => {
         } else{
             alert(response.data.message);
         }
+    }).catch((error) => {
+        alert("Something went wrong throwing this bottle: " + error.message);
     });
 });
 
@@ -65,10 +69,9 @@ let currentBottleId = null;
 
 bottleCard.forEach(card => {
     card.addEventListener("click", () => {
-        axios.get("../../bottle-server/draw.php").then((response) => {
+        axios.get(BASE_URL + "draw.php").then((response) => {
             if(!response.data.success){
                 if(response.data.message === "Throw a bottle first!"){
-                    //throwModal.classList.remove("hidden");
                     alert("Throw a bottle first!");
                 } else{
                     alert(response.data.message);
@@ -88,6 +91,8 @@ bottleCard.forEach(card => {
             });
 
             drawModal.classList.remove("hidden");
+        }).catch((error) => {
+            alert("Something went wrong drawing a bottle: " + error.message);
         });
     });
 });
@@ -113,7 +118,7 @@ postBtn.addEventListener("click", () => {
     body.append("bottle_id", currentBottleId);
     body.append("content", markTextArea.value);
 
-    axios.post("../../bottle-server/mark.php", body).then((response) => {
+    axios.post(BASE_URL + "mark.php", body).then((response) => {
         if(response.data.success){
             drawModal.classList.add("hidden");
             markTextArea.value = "";
@@ -121,6 +126,8 @@ postBtn.addEventListener("click", () => {
         }else{
             alert(response.data.message);
         }
+    }).catch((error) => {
+        alert("Something went wrong posting this mark: " + error.message);
     });
 });
 
@@ -136,8 +143,10 @@ reportBtn.addEventListener("click", () => {
     const body = new URLSearchParams();
     body.append("bottle_id", currentBottleId);
 
-    axios.post("../../bottle-server/report.php", body).then((response) => {
+    axios.post(BASE_URL + "report.php", body).then((response) => {
         alert(response.data.message);
         drawModal.classList.add("hidden");
+    }).catch((error) => {
+        alert("Something went wrong reporting this bottle: " + error.message);
     });
 });

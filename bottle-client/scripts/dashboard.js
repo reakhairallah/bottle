@@ -1,6 +1,6 @@
 const dashboardList = document.getElementById("dashboard-list");
 
-axios.get("../../bottle-server/get_dashboard.php").then((response) => {
+axios.get(BASE_URL + "get_dashboard.php").then((response) => {
     response.data.data.forEach((bottle) => {
         const entry = document.createElement("div");
         entry.classList.add("bottle-entry");
@@ -37,4 +37,6 @@ axios.get("../../bottle-server/get_dashboard.php").then((response) => {
 
         dashboardList.appendChild(entry);
     });
+}).catch((error) => {
+    alert("Something went wrong loading your dashboard: " + error.message);
 });

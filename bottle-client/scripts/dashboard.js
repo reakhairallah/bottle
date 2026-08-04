@@ -27,10 +27,7 @@ axios.get(BASE_URL + "get_dashboard.php").then((response) => {
         marksList.classList.add("marks-list");
 
         bottle.marks.forEach((markText) => {
-            const mark = document.createElement("p");
-            mark.classList.add("mark");
-            mark.textContent = markText;
-            marksList.appendChild(mark);
+            marksList.appendChild(createMarkElement(markText));
         });
 
         entry.appendChild(marksList);

@@ -15,38 +15,41 @@ const addBtn = document.getElementById("add-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 const throwModal = document.getElementById("throw-modal");
 
-addBtn.addEventListener("click", () => {
+function handleAddClick(){
     if(canThrow) {
-        throwModal.classList.remove("hidden");
+        openModal(throwModal);
     } else {
         alert("You've already thrown 3 bottles today!");
     }
-});
+}
+addBtn.addEventListener("click", handleAddClick);
 
-cancelBtn.addEventListener("click", () => {
-    throwModal.classList.add("hidden");
-});
+function handleCancelClick(){
+    closeModal(throwModal);
+}
+cancelBtn.addEventListener("click", handleCancelClick);
 
 
 // THROW MODAL: character count
 const throwTextArea = document.getElementById("throw-textarea");
 const throwCharCount = document.getElementById("throw-char-count");
 
-throwTextArea.addEventListener("input", () => {
-    throwCharCount.textContent = throwTextArea.value.length ;
-});
+function handleThrowInput(){
+    throwCharCount.textContent = throwTextArea.value.length;
+}
+throwTextArea.addEventListener("input", handleThrowInput);
 
 
 // THROW MODAL: throw button
 const throwBtn = document.getElementById("throw-btn");
 
-throwBtn.addEventListener("click", () => {
+function handleThrowClick(){
     const body = new URLSearchParams();
     body.append("content", throwTextArea.value);
 
     axios.post(BASE_URL + "throw.php", body).then((response) => {
         if(response.data.success) {
-            throwModal.classList.add("hidden");
+            closeModal(throwModal);
             throwTextArea.value = "";
             throwCharCount.textContent = "0";
         } else{
@@ -55,7 +58,8 @@ throwBtn.addEventListener("click", () => {
     }).catch((error) => {
         alert("Something went wrong throwing this bottle: " + error.message);
     });
-});
+}
+throwBtn.addEventListener("click", handleThrowClick);
 
 
 // DRAW MODAL: open and close buttons
@@ -67,75 +71,77 @@ const marksList = document.getElementById("marks-list");
 
 let currentBottleId = null;
 
-bottleCard.forEach(card => {
-    card.addEventListener("click", () => {
-        axios.get(BASE_URL + "draw.php").then((response) => {
-            if(!response.data.success){
-                if(response.data.message === "Throw a bottle first!"){
-                    alert("Throw a bottle first!");
-                } else{
-                    alert(response.data.message);
-                }
-                return;
+function handleBottleCardClick(){
+    axios.get(BASE_URL + "draw.php").then((response) => {
+        if(!response.data.success){
+            if(response.data.message === "Throw a bottle first!"){
+                alert("Throw a bottle first!");
+            } else{
+                alert(response.data.message);
             }
+            return;
+        }
 
-            currentBottleId = response.data.data.bottle.id;
-            bottleContent.textContent = response.data.data.bottle.content;
+        currentBottleId = response.data.data.bottle.id;
+        bottleContent.textContent = response.data.data.bottle.content;
 
-            marksList.innerHTML = "";
-            response.data.data.marks.forEach((markText) => {
-                const markParagraph = document.createElement("p");
-                markParagraph.classList.add("mark");
-                markParagraph.textContent = markText;
-                marksList.appendChild(markParagraph);
-            });
-
-            drawModal.classList.remove("hidden");
-        }).catch((error) => {
-            alert("Something went wrong drawing a bottle: " + error.message);
+        marksList.innerHTML = "";
+        response.data.data.marks.forEach((markText) => {
+            marksList.appendChild(createMarkElement(markText));
         });
+
+        openModal(drawModal);
+    }).catch((error) => {
+        alert("Something went wrong drawing a bottle: " + error.message);
     });
+}
+bottleCard.forEach(card => {
+    card.addEventListener("click", handleBottleCardClick);
 });
 
-closeBtn.addEventListener("click", () => {
-    drawModal.classList.add("hidden");
-});
+function handleCloseClick(){
+    closeModal(drawModal);
+}
+closeBtn.addEventListener("click", handleCloseClick);
 
 
 // DRAW MODAL: character count
 const markTextArea = document.getElementById("mark-textarea");
 const markCharCount = document.getElementById("mark-char-count");
 
-markTextArea.addEventListener("input", () => {
-    markCharCount.textContent = markTextArea.value.length ;
-});
+function handleMarkInput(){
+    markCharCount.textContent = markTextArea.value.length;
+}
+markTextArea.addEventListener("input", handleMarkInput);
+
 
 // DRAW MODAL: post button
 const postBtn = document.getElementById("post-mark-btn");
 
-postBtn.addEventListener("click", () => {
+function handlePostClick(){
     const body = new URLSearchParams();
     body.append("bottle_id", currentBottleId);
     body.append("content", markTextArea.value);
 
     axios.post(BASE_URL + "mark.php", body).then((response) => {
         if(response.data.success){
-            drawModal.classList.add("hidden");
+            closeModal(drawModal);
             markTextArea.value = "";
             markCharCount.textContent = "0";
-        }else{
+        } else{
             alert(response.data.message);
         }
     }).catch((error) => {
         alert("Something went wrong posting this mark: " + error.message);
     });
-});
+}
+postBtn.addEventListener("click", handlePostClick);
 
 
 // DRAW MODAL: report button
 const reportBtn = document.getElementById("report-btn");
 
-reportBtn.addEventListener("click", () => {
+function handleReportClick(){
     if(!confirm("Are you sure you want to report this bottle?")){
         return;
     }
@@ -145,8 +151,9 @@ reportBtn.addEventListener("click", () => {
 
     axios.post(BASE_URL + "report.php", body).then((response) => {
         alert(response.data.message);
-        drawModal.classList.add("hidden");
+        closeModal(drawModal);
     }).catch((error) => {
         alert("Something went wrong reporting this bottle: " + error.message);
     });
-});
+}
+reportBtn.addEventListener("click", handleReportClick);

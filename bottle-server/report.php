@@ -1,6 +1,6 @@
 <?php
 
-include("token.php");
+include("database/token.php");
 
 if(isset($_POST["bottle_id"])) {
     $bottle_id = $_POST["bottle_id"];

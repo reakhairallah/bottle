@@ -1,6 +1,6 @@
 <?php
 
-include("token.php");
+include("database/token.php");
 
 $user_id = $current_user["id"];
 

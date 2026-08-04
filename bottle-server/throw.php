@@ -1,6 +1,6 @@
 <?php
 
-include("token.php");
+include("database/token.php");
 
 if(isset($_POST["content"])){
     $content = $_POST["content"];
